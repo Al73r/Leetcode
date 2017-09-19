@@ -1,2 +1,2 @@
-I'm now setting my vscode.
-Try again.
+Recently, I'm doing Leetcode.
+This is a record of my code.
