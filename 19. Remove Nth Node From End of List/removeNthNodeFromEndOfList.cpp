@@ -6,7 +6,7 @@
  *     ListNode(int x) : val(x), next(NULL) {}
  * };
  */
- class Solution {
+class Solution {
 public:
     ListNode* removeNthFromEnd(ListNode* head, int n) {
         // if(head==NULL) return NULL;

@@ -11,9 +11,9 @@ public:
     ListNode* reverseKGroup(ListNode* head, int k) {
         ListNode dummy(-1);
         dummy.next = head;
-        ListNode *prev=&dummy, *cur, *next, *end=head;
+        ListNode *prev=&dummy, *cur, *tmp, *next, *end=head;
         bool stop = false;
-        while(!stop){
+        while(end!=NULL){
             for(int i=0; i<k; i++){
                 if(end==NULL){
                     stop = true;
@@ -22,13 +22,17 @@ public:
                 end = end->next;
             }
             if(stop) break;
-            for(prev=start, cur=prev->next, next=cur->next;
-                    next!=end;
-                    prev=prev->next, cur=cur->next, next=next->next){
-                prev->next = next;
-                cur->next = next->next;
-                next->next = cur;
+            for(cur=prev->next, next=end;
+                    cur->next!=end;
+                    next = cur, cur = tmp, i++){
+                tmp = cur->next;
+                cur->next = next;
             }
+            cur->next = next;
+            tmp = prev->next;
+            prev->next = cur;
+            prev = tmp;
+            end = prev->next;
         }
         return dummy.next;
     }
