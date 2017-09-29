@@ -7,49 +7,31 @@ public:
         for(int i=0; i<n; i++)
             dict[words[i]]++;
         
-        unordered_map<string, int> times;
-        int left=0, count=0;
-        
-        while(left+n*wl<=sl){
-            //fill 
-            if(count==0){ 
-                for(int i=left; i<sl && count<n; i+=wl){
+        for(int group=0; group<wl; group++){
+            unordered_map<string, int> times;
+            for(int count=0, left=group; left+n*wl<=sl; left+=wl){
+                for(int i=left+count*wl; count<n && i+wl<=sl; i+=wl){
                     string str = s.substr(i, wl);
-                    if(dict.count(str)){
-                        times[str]++;
-                        count++;
-                    }
-                    else{
-                        times.clear();
-                        count=0;
+                    times[str]++;
+                    count++;
+                }
+                if(count<n)
+                    return ans;
+                
+                bool valid=true; 
+                for(int i=0; i<n; i++){
+                    if(times.count(words[i])==0 || dict[words[i]]!=times[words[i]]) {
+                        valid=false;
+                        break;
                     }
                 }
-                if(count<n) return ans;
-            }
-
-            //vaild?
-            bool valid=true; 
-            for(int i=0; i<n; i++){
-                if(dict[words[i]]!=times[words[i]]) {
-                    valid=false;
-                    break;
+                if(valid){
+                    ans.push_back(left);
                 }
-            }
-            if(valid){
-                ans.push_back(left);
-            }
-
-            //next
-            string str = s.substr(left, wl); 
-            times[str]--;
-            str = s.substr(left+wl*n, wl);
-            if(dict.count(str)){
-                times[str]++;
-            }
-            else{
-                times.clear();
-                count=0;
-                left += (wl+1)*n;
+                string str=s.substr(left, wl);
+                times[str]--;
+                count--;
+                
             }
         }
         return ans;
