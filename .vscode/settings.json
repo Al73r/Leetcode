@@ -5,6 +5,7 @@
         "string_view": "cpp",
         "valarray": "cpp",
         "bitset": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "ratio": "cpp"
     }
 }

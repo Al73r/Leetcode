@@ -1,94 +1,56 @@
 class Solution {
 public:
+    int row[9], col[9], blo[9];
     void solveSudoku(vector<vector<char>>& board) {
-        vector<vector<int>> n(9,vector<int>(9,9));
-        vector<vector<vector<bool>>> p(9, vector<vector<bool>>(9, vector<bool>(9, true)));
+        for(int i=0; i<9; i++){
+            row[i] = (1<<9) - 1;
+            col[i] = (1<<9) - 1;
+            blo[i] = (1<<9) - 1;
+        }
         for(int i=0; i<9; i++){
             for(int j=0; j<9; j++){
-                if(board[i][j]=='.') continue;
-                int num = board[i][j] - '0' - 1;
-                for(int k=0; k<9; k++){
-                    if(p[i][k][num]){
-                        n[i][k]--;
-                        p[i][k][num] = false;
-                    }
-                    if(p[k][j][num]){
-                        n[k][j]--;
-                        p[k][j][num] = false;
-                    }
-                    int x = i / 3 * 3 + k / 3;
-                    int y = j / 3 * 3 + k % 3;
-                    if(p[x][y][num]){
-                        n[x][y]--;
-                        p[x][y][num] = false;
-                    }
+                if(board[i][j]!='.'){
+                    int num = board[i][j] - '1';
+                    row[i] -= 1<<num;
+                    col[j] -= 1<<num;
+                    blo[i/3*3 + j/3] -= 1<<num;
                 }
-                n[i][j] = 0;
             }
         }
-        infer(board, n, p);
-        
+        dfs(0, 0, board);
     }
+
 private:
-    void infer(vector<vector<char>>& board, vector<vector<int>>& n, vector<vector<vector<bool>>>& p){
-        bool update = true;
-        while(update){
-            update = false;
-            int i, j, num;
-            for(i=0; i<9; i++){
-                for(j=0; j<9; j++){
-                    if(n[i][j]==1){
-                        update = true;
-                        break;
-                    }
-                }
-                if(update) break;
+    bool dfs(int x, int y, vector<vector<char>>& board){
+        if(y>8){
+            if(x<8){
+                y = 0;
+                x++;
             }
-            if(!update) break;
-            for(num=0; num<9; num++){
-                if(p[i][j][num])
-                    break;
-            }
-            board[i][j] = num + '0' + 1;
-            for(int k=0; k<9; k++){
-                if(p[i][k][num]){
-                    n[i][k]--;
-                    p[i][k][num] = false;
-                }
-                if(p[k][j][num]){
-                    n[k][j]--;
-                    p[k][j][num] = false;
-                }
-                int x = i / 3 * 3 + k / 3;
-                int y = j / 3 * 3 + k % 3;
-                if(p[x][y][num]){
-                    n[x][y]--;
-                    p[x][y][num] = false;
-                }
-            }
+            else
+                return true;
         }
-    }
-    bool dfs(vector<vector<char>>& board, vector<vector<int>>& n, vector<vector<vector<bool>>>& p){
-        int i, j, num;
-        bool update = false;
-        for(i=0; i<9; i++){
-            for(j=0; j<9; j++){
-                if(n[i][j]==2){
-                    update = true;
-                    break;
-                }
-            }
-            if(update) break;
-        }
-        if(n[i][j]!=2)
+        if(board[x][y]!='.')
+            return dfs(x, y+1, board);
+
+        int tmp = row[x] & col[y] & blo[x/3*3 + y/3];
+        if(tmp==0)
             return false;
-        for(num=0; num<9; num++){
-            if(!p[i][j][num])
+        for(int i=0; i<9; i++){
+            if(!(tmp & (1<<i)))
                 continue;
-            vector<vector<char>> board2(board);
-            vector<vector<int>> n2(n);
-            vector<vector<vector<bool>>> p;
-            //dfs(b);
+            board[x][y] = i + '1';
+            row[x] -= 1<<i;
+            col[y] -= 1<<i;
+            blo[x/3*3 + y/3] -= 1<<i;
+            if(dfs(x, y+1, board))
+                return true;
+            board[x][y] = '.';
+            row[x] += 1<<i;
+            col[y] += 1<<i;
+            blo[x/3*3 + y/3] += 1<<i;
+            tmp -= 1<<i;
         }
+        return false;
     }
 };
