@@ -6,7 +6,8 @@
         "valarray": "cpp",
         "bitset": "cpp",
         "utility": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "string": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
