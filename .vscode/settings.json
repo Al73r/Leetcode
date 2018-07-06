@@ -7,7 +7,10 @@
         "bitset": "cpp",
         "utility": "cpp",
         "ratio": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp",
+        "ios": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
